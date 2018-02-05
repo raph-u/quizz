@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet var answerButton2: UIButton!
     @IBOutlet var answerButton3: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var resetButton: UIButton!
     
     var session : QuizSession!
 
@@ -22,9 +23,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        // Create our game session, and get the first question
-        session = QuizSession()
-        nextOne()
+        resetSession()
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,31 +31,32 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func resetSession() {
+        // Create our game session, and get the first question
+        session = QuizSession()
+        nextOne()
+    }
+    
     @IBAction func answerClick(_ sender: UIButton) {
         // Tell the session the chosen answer
-        if session.checkAnswer(sender.currentTitle!) {
-            // Update the score
-            scoreLabel.text = String(session.score)
-        }
+        session.checkAnswer(sender.currentTitle!)
         
-        // Update the score label
-        questionLabel.text = "GAME OVER"
+        // Update labels
+        scoreLabel.text = "Score: \(session.score) / \(session.questionCount)"
         
         // Pass to the next question
         nextOne()
     }
 
     @IBAction func resetGame(_ sender: Any) {
-        // Reset the session
-        session = QuizSession()
-        nextOne()
+        resetSession()
         
         // Reset the UI
         scoreLabel.isHidden = true
-        
         answerButton1.isHidden = false
         answerButton2.isHidden = false
         answerButton3.isHidden = false
+        resetButton.isHidden = true
     }
     
     func nextOne() {
@@ -69,15 +69,22 @@ class ViewController: UIViewController {
             answerButton3.setTitle(question.answers[2], for: UIControlState())
         }
         else {
+            questionLabel.text = "GAME OVER"
+            
+            // Display the score
+            scoreLabel.isHidden = false
+            
             // No more questions! This is the end
             answerButton1.isHidden = true
             answerButton2.isHidden = true
             answerButton3.isHidden = true
             
-            questionLabel.text = "GAME OVER"
+            // Prevents text blinks on game session reset
+            answerButton1.setTitle("", for: UIControlState())
+            answerButton2.setTitle("", for: UIControlState())
+            answerButton3.setTitle("", for: UIControlState())
             
-            // Display the score
-            scoreLabel.isHidden = false
+            resetButton.isHidden = false
         }
     }
     
