@@ -12,6 +12,7 @@ class QuizSession {
     
     fileprivate var questions: [Question]
     fileprivate var currentIndex: Int
+    var score: Int
     
     init() {
         questions = [
@@ -29,7 +30,9 @@ class QuizSession {
                 correctAnswer: "Star wars")
         ]
         
-        currentIndex = -1;
+        currentIndex = -1
+        
+        score = 0
     }
     
     func nextQuestion() -> Question? {
@@ -43,7 +46,11 @@ class QuizSession {
     }
     
     func checkAnswer(_ answer: String) -> Bool {
-        return questions[currentIndex].isCorrectAnswer(answer)
+        if questions[currentIndex].isCorrectAnswer(answer) {
+            score += 1
+            return true
+        }
+        return false
     }
     
 }
