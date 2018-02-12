@@ -11,11 +11,13 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet var questionLabel: UILabel!
+    @IBOutlet weak var hintButton: UIButton!
     @IBOutlet var answerButton1: UIButton!
     @IBOutlet var answerButton2: UIButton!
     @IBOutlet var answerButton3: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var resetButton: UIButton!
+    
     
     var session : QuizSession!
 
@@ -52,11 +54,19 @@ class ViewController: UIViewController {
         resetSession()
         
         // Reset the UI
+        hintButton.isHidden = false
         scoreLabel.isHidden = true
         answerButton1.isHidden = false
         answerButton2.isHidden = false
         answerButton3.isHidden = false
         resetButton.isHidden = true
+    }
+    
+    @IBAction func showHint(_ sender: Any) {
+        let hint = session.hint
+        let alert = UIAlertController(title: "Alert", message: hint, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func nextOne() {
@@ -70,6 +80,7 @@ class ViewController: UIViewController {
         }
         else {
             questionLabel.text = "GAME OVER"
+            hintButton.isHidden = true
             
             // Display the score
             scoreLabel.isHidden = false

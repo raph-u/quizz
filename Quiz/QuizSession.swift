@@ -24,20 +24,29 @@ class QuizSession {
         }
     }
     
+    var hint: String {
+        get {
+            return self.questions[currentIndex].hint
+        }
+    }
+    
     init() {
         questions = [
             Question(
                 caption: "2+2",
                 answers: ["1", "2", "4"],
-                correctAnswer: "4"),
+                correctAnswer: "4",
+                hint: "really ?"),
             Question(
                 caption: "Meaning of life?",
                 answers: ["God", "42", "Me"],
-                correctAnswer: "42"),
+                correctAnswer: "42",
+                hint: "Thanks for the fish"),
             Question(
                 caption: "May the Force be with you",
                 answers: ["Star wars", "Forest Gump", "American pie"],
-                correctAnswer: "Star wars")
+                correctAnswer: "Star wars",
+                hint: "The force is not strong in this one")
         ]
         
         currentIndex = -1
