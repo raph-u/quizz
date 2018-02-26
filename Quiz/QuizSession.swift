@@ -9,65 +9,38 @@
 import Foundation
 
 class QuizSession {
+    // Because swift has no `protected` access control, we fall back
+    // on internal with an ugly underscore prefix, so that code with
+    // an explicit receiver looks ugly and should be prevented.
+    // (see https://medium.com/ios-os-x-development/swift-needs-protected-access-level-b966001a1d08 )
     
-    fileprivate var questions: [Question]
-    fileprivate var currentIndex: Int
-    private var _score: Int
+    let _questionRepository: QuestionRepository
+    var _currentQuestion: Question!
+    var _totalQuestionCount: Int
+    var _score = 0
     
+    // Public interface to get the score, as a property
     var score: Int {
-        get { return _score}
+        get { return _score }
     }
-    
-    var questionCount: Int {
-        get {
-            return questions.count
-        }
+
+    // Public interface to get the total question count
+    var questionsCount: Int {
+        get { return _totalQuestionCount }
     }
-    
-    var hint: String {
-        get {
-            return self.questions[currentIndex].hint
-        }
-    }
-    
-    init() {
-        questions = [
-            Question(
-                caption: "2+2",
-                answers: ["1", "2", "4"],
-                correctAnswer: "4",
-                hint: "really ?"),
-            Question(
-                caption: "Meaning of life?",
-                answers: ["God", "42", "Me"],
-                correctAnswer: "42",
-                hint: "Thanks for the fish"),
-            Question(
-                caption: "May the Force be with you",
-                answers: ["Star wars", "Forest Gump", "American pie"],
-                correctAnswer: "Star wars",
-                hint: "The force is not strong in this one")
-        ]
-        
-        currentIndex = -1
-        _score = 0
+
+    init(questionRepository: QuestionRepository, totalQuestionCount: Int) {
+        _questionRepository = questionRepository
+        _totalQuestionCount = totalQuestionCount
     }
     
     func nextQuestion() -> Question? {
-        if currentIndex+1 >= questions.count {
-            return nil
-        }
-        else {
-            currentIndex += 1
-            return questions[currentIndex]
-        }
+        _currentQuestion = _questionRepository.fetchQuestion()
+        return _currentQuestion
     }
     
     func checkAnswer(_ answer: String) -> Bool {
-        if questions[currentIndex].isCorrectAnswer(answer) {
-            _score += 1
-            return true
-        }
-        return false
+        return _currentQuestion.isCorrectAnswer(answer)
     }
+    
 }
